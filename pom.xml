@@ -3,23 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>io.confighub</groupId>
   <artifactId>quarkus-config-hub-parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-
   <name>Quarkus Config Hub</name>
   <description>Type-safe, versioned configuration management for Quarkus applications.</description>
-
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <quarkus.version>3.40.1</quarkus.version>
+    <jgit.version>7.8.0.202609011348-r</jgit.version>
     <surefire.version>3.5.4</surefire.version>
     <compiler-plugin.version>3.14.1</compiler-plugin.version>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -31,13 +28,12 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <modules>
     <module>runtime</module>
     <module>deployment</module>
     <module>integration-tests</module>
+    <module>server</module>
   </modules>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -45,9 +41,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compiler-plugin.version}</version>
-          <configuration>
-            <parameters>true</parameters>
-          </configuration>
+          <configuration><parameters>true</parameters></configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

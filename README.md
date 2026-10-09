@@ -4,7 +4,7 @@ Experimental Quarkus extension and configuration platform focused on type-safe, 
 
 ## Current status
 
-**Milestone 1 / spike:** generate a configuration contract at Quarkus augmentation time from application `@ConfigMapping` interfaces.
+**Milestone 2:** JGit-backed Config Hub Server. Milestone 1 (schema generation during augmentation) is complete.
 
 Target output:
 
@@ -50,8 +50,8 @@ The integration-test application should contain `META-INF/config-hub-schema.json
 
 ## Roadmap
 
-1. **Schema generator spike** — current.
-2. Config Hub Server backed by JGit.
+1. **Schema generator spike** — complete.
+2. **Config Hub Server backed by JGit** — implemented in Milestone 2.
 3. Runtime ConfigSource that loads a configuration snapshot at startup.
 4. Optional local cache fallback when Config Hub is unavailable.
 5. Schema/config validation.
@@ -61,3 +61,34 @@ The integration-test application should contain `META-INF/config-hub-schema.json
 9. Native Image integration tests.
 
 See [`docs-refinement.md`](docs-refinement.md) for the working architecture decisions.
+
+
+## Config Hub Server
+
+The server exposes:
+
+```text
+GET /api/config/{application}/{environment}
+```
+
+Configuration is resolved from Git with this precedence:
+
+```text
+global/application.properties
+        ↓
+global/{environment}.properties
+        ↓
+{application}/application.properties
+        ↓
+{application}/{environment}.properties
+```
+
+Example server configuration:
+
+```properties
+config-hub.git.repository-uri=https://github.com/example/config-repository.git
+config-hub.git.worktree=.config-hub/repository
+config-hub.git.branch=main
+```
+
+The response includes the resolved properties and the Git commit SHA used as the configuration version.

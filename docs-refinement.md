@@ -20,7 +20,7 @@
 ## MVP milestones
 
 1. Generate `META-INF/config-hub-schema.json` during Quarkus augmentation from application `@ConfigMapping` metadata.
-2. Minimal Config Hub Server backed by JGit with `GET /api/config/{application}/{environment}`.
+2. **COMPLETE:** Minimal Config Hub Server backed by JGit with `GET /api/config/{application}/{environment}`.
 3. Runtime `ConfigSource` that loads a resolved snapshot at startup.
 4. Optional local cache fallback.
 5. Schema/config validation.
@@ -43,3 +43,31 @@ The first implementation uses Quarkus `ConfigMappingBuildItem` plus Jandex durin
 - generation of a JSON resource through `GeneratedResourceBuildItem`.
 
 Later passes will cover more SmallRye mapping semantics such as collections, maps, converters and additional annotations.
+
+
+## Milestone 2 — Config Hub Server
+
+Implemented decisions:
+
+- Quarkus server module.
+- Git-backed source of truth using JGit.
+- Repository URI, worktree and branch are configurable.
+- The server clones the repository when no local working copy exists.
+- Before resolving configuration, the server fetches the remote and hard-resets the configured branch to `origin/{branch}`.
+- Configuration precedence:
+  1. `global/application.properties`
+  2. `global/{environment}.properties`
+  3. `{application}/application.properties`
+  4. `{application}/{environment}.properties`
+- The Git HEAD commit SHA is returned as the configuration version.
+- Application and environment names are semantically free but restricted to path-safe identifiers.
+- Repository synchronization is guarded by a process-local lock.
+- The adapter is behind the `ConfigurationRepository` domain port.
+
+Still pending beyond this milestone:
+
+- authentication for private Git repositories;
+- improved Git failure handling / stale local checkout strategy;
+- observability and health information;
+- schema-aware validation;
+- runtime ConfigSource client.
