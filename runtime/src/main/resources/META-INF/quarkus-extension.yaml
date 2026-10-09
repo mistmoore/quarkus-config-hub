@@ -1,0 +1,10 @@
+name: Quarkus Config Hub
+metadata:
+  keywords:
+    - config
+    - configuration
+    - config-hub
+  guide: https://github.com/mistmoore/quarkus-config-hub
+  categories:
+    - "miscellaneous"
+  status: experimental
