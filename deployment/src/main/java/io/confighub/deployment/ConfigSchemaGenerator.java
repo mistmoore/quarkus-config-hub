@@ -33,7 +33,11 @@ final class ConfigSchemaGenerator {
     }
 
     private MappingSchema generateMapping(ConfigMappingBuildItem mapping, IndexView index) {
-        ClassInfo configClass = mapping.getConfigClass();
+        DotName configClassName = DotName.createSimple(mapping.getConfigClass().getName());
+        ClassInfo configClass = index.getClassByName(configClassName);
+        if (configClass == null) {
+            throw new IllegalStateException("Config mapping is not present in the combined Jandex index: " + configClassName);
+        }
         List<SchemaNode> nodes = walkGroup(configClass, normalizePrefix(mapping.getPrefix()), configClass.name(), index);
         return new MappingSchema(mapping.getPrefix(), configClass.name().toString(), "application", nodes);
     }
