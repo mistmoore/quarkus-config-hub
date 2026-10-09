@@ -1,6 +1,7 @@
 package io.confighub.server.infrastructure.git;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,15 +52,15 @@ class JGitConfigurationRepositoryTest {
 
         ResolvedConfiguration resolved = repository.resolve("orders-service", "pluto");
 
-        assertThat(resolved.application()).isEqualTo("orders-service");
-        assertThat(resolved.environment()).isEqualTo("pluto");
-        assertThat(resolved.version()).hasSize(40);
-        assertThat(resolved.properties())
-                .containsEntry("common.timeout", "5s")
-                .containsEntry("common.region", "global")
-                .containsEntry("global.only", "true")
-                .containsEntry("service.name", "orders")
-                .containsEntry("payment.url", "https://payment.internal");
+        assertEquals("orders-service", resolved.application());
+        assertEquals("pluto", resolved.environment());
+        assertEquals(40, resolved.version().length());
+        assertEquals("5s", resolved.properties().get("common.timeout"));
+        assertEquals("global", resolved.properties().get("common.region"));
+        assertEquals("true", resolved.properties().get("global.only"));
+        assertEquals("orders", resolved.properties().get("service.name"));
+        assertEquals("https://payment.internal", resolved.properties().get("payment.url"));
+        assertTrue(resolved.properties().size() >= 5);
     }
 
     private static void write(Path root, String relative, String content) throws Exception {
